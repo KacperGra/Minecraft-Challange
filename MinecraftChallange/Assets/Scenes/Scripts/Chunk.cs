@@ -5,19 +5,28 @@ using UnityEngine;
 public class Chunk : MonoBehaviour
 {
 	private int sizeX = 16;
+	private int positionX;
+	private int positionZ;
 	private List<Vector3> blockPos;
-	void Start()
-	{
+
+	public void SetPosition(int _positionX, int _positionZ)
+    {
+		positionX = _positionX;
+		positionZ = _positionZ;
+    }
+
+	public void GenerateChunk()
+    {
 		int vertexIndex = 0;
 		List<Vector3> vertices = new List<Vector3>();
 		List<int> triangles = new List<int>();
 		List<Vector2> uvs = new List<Vector2>();
 
 		blockPos = new List<Vector3>();
-		for(int x = (int)transform.position.x; x < transform.position.x + sizeX; ++x)
-        {
-			for(int z = (int)transform.position.z; z < transform.position.z + sizeX; ++z)
-            {
+		for (int x = positionX; x < positionX + sizeX; ++x)
+		{
+			for (int z = positionZ; z < positionZ + sizeX; ++z)
+			{
 				int height = (int)(Mathf.PerlinNoise(x * .08f, z * .08f) * 5);
 
 				var blockPos = new Vector3(x, height, z);
@@ -38,13 +47,7 @@ public class Chunk : MonoBehaviour
 					}
 				}
 			}
-        }
-
-
-		
-
-
-		
+		}
 
 		Mesh mesh = new Mesh();
 		mesh.vertices = vertices.ToArray();
@@ -54,7 +57,6 @@ public class Chunk : MonoBehaviour
 		mesh.RecalculateNormals();
 
 		GetComponent<MeshFilter>().mesh = mesh;
-
+		GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
-
 }
