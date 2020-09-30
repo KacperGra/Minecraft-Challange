@@ -26,12 +26,3 @@ public class MapGenerator : MonoBehaviour
     }
 }
 
-public struct ChunkPos
-{
-    public int x, z;
-    public ChunkPos(int _x, int _z)
-    {
-        x = _x;
-        z = _z;
-    }
-}
