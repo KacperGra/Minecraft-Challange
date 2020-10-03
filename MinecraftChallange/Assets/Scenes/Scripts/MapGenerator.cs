@@ -5,7 +5,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     public GameObject chunkPrefab;
-    private int chunkMapSize = 4;
+    private int chunkMapSize = 16;
     private List<Chunk> chunkList = new List<Chunk>();
     //public static Dictionary<Chunk, ChunkPos> chunkList = new Dictionary<Chunk, ChunkPos>();
 
@@ -21,7 +21,14 @@ public class MapGenerator : MonoBehaviour
             for(int z = 0; z < _chunkMapSizeY; ++z)
             {
                 var chunk = Instantiate(chunkPrefab, transform) as GameObject;
-                chunk.GetComponent<Chunk>().SetPosition(x * 16, z * 16);
+                if (x > 0 || z > 0)
+                {
+                    chunk.GetComponent<Chunk>().SetPosition(x * (16 - 1), z * (16 - 1));
+                }
+                else
+                {
+                    chunk.GetComponent<Chunk>().SetPosition(x * 16, z * 16);
+                }
                 chunk.GetComponent<Chunk>().GenerateChunk();
             }
         }

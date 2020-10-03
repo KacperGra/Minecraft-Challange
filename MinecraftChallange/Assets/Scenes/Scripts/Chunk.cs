@@ -5,7 +5,7 @@ using UnityEngine;
 public class Chunk : MonoBehaviour
 {
 	private const int sizeX = 16;
-	private const int maxHeight = 10;
+	private const int maxHeight = 64;
 	private int positionX;
 	private int positionZ;
 
@@ -29,7 +29,9 @@ public class Chunk : MonoBehaviour
 		{
 			for (int z = positionZ; z < positionZ + sizeX; ++z)
 			{
-				int height = (int)(Mathf.PerlinNoise(x * .05f, z * .05f) * 10 - 1);
+				int terrainHeight = 8;
+				int height = (int)(Mathf.PerlinNoise(x * .05f, z * .05f) * terrainHeight) + maxHeight - terrainHeight - 32;
+				Debug.Log(height);
 				var blockPos = new Vector3(x, height, z);
 				blocks[x - positionX, height, z - positionZ] = BlockType.Dirt;	
 			}
