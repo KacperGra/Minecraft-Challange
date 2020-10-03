@@ -7,35 +7,24 @@ public class Chunk : MonoBehaviour
 	private const int sizeX = 16;
 	private const int maxHeight = 64;
 
-	private readonly BlockType[,,] blocks = new BlockType[sizeX + 2, maxHeight, sizeX + 2];
+	public BlockType[,,] blocks = new BlockType[sizeX + 2, maxHeight, sizeX + 2];
 
-	public void GenerateChunk(int positionX, int positionZ)
+	public void UpdateMesh(int positionX, int positionZ)
     {
 		int vertexIndex = 0;
 		List<Vector3> vertices = new List<Vector3>();
 		List<int> triangles = new List<int>();
 		List<Vector2> uvs = new List<Vector2>();
 
-
-		for (int x = positionX; x < positionX + sizeX; ++x)
-		{
-			for (int z = positionZ; z < positionZ + sizeX; ++z)
-			{
-				int terrainHeight = 8;
-				int height = (int)(Mathf.PerlinNoise(x * .05f, z * .05f) * terrainHeight) + maxHeight - terrainHeight - 32;
-				blocks[x - positionX, height, z - positionZ] = BlockType.Dirt;	
-			}
-		}
-
 		for (int x = positionX + 1; x < positionX + sizeX; ++x)
 		{
 			for (int z = positionZ + 1; z < positionZ + sizeX; ++z)
 			{
-				for(int y = 0; y < maxHeight; ++y)
-                {
+				for (int y = 0; y < maxHeight; ++y)
+				{
 					var blockPos = new Vector3Int(x - 1, y, z - 1);
-					if(blocks[x - positionX, y, z - positionZ] == BlockType.Dirt)
-                    {
+					if (blocks[x - positionX, y, z - positionZ] == BlockType.Dirt)
+					{
 						if (y < maxHeight - 1 && blocks[x - positionX, y + 1, z - positionZ] == BlockType.Air) // Top
 						{
 							for (int i = 0; i < 6; i++)
@@ -65,7 +54,7 @@ public class Chunk : MonoBehaviour
 						}
 
 						if (blocks[x - positionX + 1, y, z - positionZ] == BlockType.Air) // Right
-                        {
+						{
 							for (int i = 0; i < 6; i++)
 							{
 								int triangleIndex = VoxelData.voxelTris[5, i];
@@ -120,9 +109,9 @@ public class Chunk : MonoBehaviour
 							}
 						}
 					}
-					
-                }
-				
+
+				}
+
 			}
 		}
 
@@ -136,6 +125,20 @@ public class Chunk : MonoBehaviour
 
 		GetComponent<MeshFilter>().mesh = mesh;
 		GetComponent<MeshCollider>().sharedMesh = mesh;
+	}
+
+	public void GenerateChunk(int positionX, int positionZ)
+    {
+		for (int x = positionX; x < positionX + sizeX; ++x)
+		{
+			for (int z = positionZ; z < positionZ + sizeX; ++z)
+			{
+				int terrainHeight = 8;
+				int height = (int)(Mathf.PerlinNoise(x * .05f, z * .05f) * terrainHeight) + maxHeight - terrainHeight - 32;
+				blocks[x - positionX, height, z - positionZ] = BlockType.Dirt;	
+			}
+		}
+		UpdateMesh(positionX, positionZ);
 	}
 
 }

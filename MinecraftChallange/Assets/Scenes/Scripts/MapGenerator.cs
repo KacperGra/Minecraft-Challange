@@ -6,16 +6,15 @@ public class MapGenerator : MonoBehaviour
 {
     public Transform player;
     public GameObject chunkPrefab;
-    private int chunkMapSize = 2;
     public static Dictionary<ChunkPosition, Chunk> chunkDictionary = new Dictionary<ChunkPosition, Chunk>();
     private Vector2Int currentChunk = new Vector2Int();
-    private int renderDistance = 4;
+    private readonly int renderDistance = 4;
 
 
     private void Start()
     {
-        currentChunk = new Vector2Int(0, 0);
-        GenerateMap(chunkMapSize, chunkMapSize);
+        currentChunk = new Vector2Int((int)player.position.x / 16, (int)player.position.z / 16);
+        RenderChunks();
     }
 
     private void Update()
@@ -27,16 +26,16 @@ public class MapGenerator : MonoBehaviour
     {
         var newChunk = Instantiate(chunkPrefab, transform) as GameObject;
 
-        newChunk.GetComponent<Chunk>().GenerateChunk(_posX * 15, _posZ * 15);
+        newChunk.GetComponent<Chunk>().GenerateChunk(_posX * 16, _posZ * 16);
 
         chunkDictionary.Add(new ChunkPosition(_posX, _posZ), newChunk.GetComponent<Chunk>());
     }
 
     void GenerateMap(int _chunkMapSizeX, int _chunkMapSizeY)
     {
-        for(int x = -8; x < _chunkMapSizeX; ++x)
+        for(int x = -_chunkMapSizeX; x < _chunkMapSizeX; ++x)
         { 
-            for(int z = -8; z < _chunkMapSizeY; ++z)
+            for(int z = -_chunkMapSizeY; z < _chunkMapSizeY; ++z)
             {
                 GenerateChunk(x, z);
             }
@@ -55,9 +54,18 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void HideChunk(int _chunkPositionX, int _chunkPositionZ)
+    void HideChunk()
     {
-
+        for(int x = currentChunk.x - renderDistance - 1; x < currentChunk.x + renderDistance + 1; ++x)
+        {
+            for (int z = currentChunk.y - renderDistance - 1; z < currentChunk.y + renderDistance + 1; ++z)
+            {
+                if (chunkDictionary.ContainsKey(new ChunkPosition(x, z)))
+                {
+                    chunkDictionary[new ChunkPosition(x, z)].gameObject.SetActive(false);
+                }
+            }
+        }
     }
 
     void CheckChunk(ref Vector2Int _currentChunk)
@@ -65,7 +73,9 @@ public class MapGenerator : MonoBehaviour
         var acctualChunk = new Vector2Int((int)player.position.x / 16, (int)player.position.z / 16);
         if(acctualChunk != _currentChunk)
         {
+            Debug.Log("X: " + _currentChunk.x.ToString() + " Y: " + _currentChunk.y.ToString());
             _currentChunk = new Vector2Int((int)player.position.x / 16, (int)player.position.z / 16);
+            HideChunk();
             RenderChunks();
         }
     }
