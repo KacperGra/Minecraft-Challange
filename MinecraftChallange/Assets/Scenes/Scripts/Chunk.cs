@@ -6,18 +6,10 @@ public class Chunk : MonoBehaviour
 {
 	private const int sizeX = 16;
 	private const int maxHeight = 64;
-	private int positionX;
-	private int positionZ;
 
-	private BlockType[,,] blocks = new BlockType[sizeX + 2, maxHeight, sizeX + 2];
+	private readonly BlockType[,,] blocks = new BlockType[sizeX + 2, maxHeight, sizeX + 2];
 
-	public void SetPosition(int _positionX, int _positionZ)
-    {
-		positionX = _positionX;
-		positionZ = _positionZ;
-    }
-
-	public void GenerateChunk()
+	public void GenerateChunk(int positionX, int positionZ)
     {
 		int vertexIndex = 0;
 		List<Vector3> vertices = new List<Vector3>();
@@ -31,8 +23,6 @@ public class Chunk : MonoBehaviour
 			{
 				int terrainHeight = 8;
 				int height = (int)(Mathf.PerlinNoise(x * .05f, z * .05f) * terrainHeight) + maxHeight - terrainHeight - 32;
-				Debug.Log(height);
-				var blockPos = new Vector3(x, height, z);
 				blocks[x - positionX, height, z - positionZ] = BlockType.Dirt;	
 			}
 		}
@@ -137,6 +127,7 @@ public class Chunk : MonoBehaviour
 		}
 
 		Mesh mesh = new Mesh();
+
 		mesh.vertices = vertices.ToArray();
 		mesh.triangles = triangles.ToArray();
 		mesh.uv = uvs.ToArray();
@@ -146,4 +137,5 @@ public class Chunk : MonoBehaviour
 		GetComponent<MeshFilter>().mesh = mesh;
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
+
 }
