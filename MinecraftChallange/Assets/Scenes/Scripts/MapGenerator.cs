@@ -5,7 +5,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     public GameObject chunkPrefab;
-    private int chunkMapSize = 16;
+    private int chunkMapSize = 4;
     private List<Chunk> chunkList = new List<Chunk>();
     //public static Dictionary<Chunk, ChunkPos> chunkList = new Dictionary<Chunk, ChunkPos>();
 
