@@ -231,7 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fdd71c51532c204a87ac4b85db0b91e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 250
+  movementSpeed: 500
   jumpForce: 10
 --- !u!54 &446245847
 Rigidbody:
@@ -305,6 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ba43992151ae9449288676453fc6f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 446245845}
   chunkPrefab: {fileID: 3467663402533343737, guid: fdafaea6f8215ff45bacf99a98d9e78b,
     type: 3}
 --- !u!1 &705507993
