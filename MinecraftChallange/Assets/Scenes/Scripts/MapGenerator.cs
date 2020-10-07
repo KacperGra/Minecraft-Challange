@@ -8,7 +8,7 @@ public class MapGenerator : MonoBehaviour
     public GameObject chunkPrefab;
     public static Dictionary<ChunkPosition, Chunk> chunkDictionary = new Dictionary<ChunkPosition, Chunk>();
     private Vector2Int currentChunk = new Vector2Int();
-    private readonly int renderDistance = 4;
+    private readonly int renderDistance = 10;
 
 
     private void Start()
@@ -25,9 +25,8 @@ public class MapGenerator : MonoBehaviour
     void GenerateChunk(int _posX, int _posZ)
     {
         var newChunk = Instantiate(chunkPrefab, transform) as GameObject;
-
         newChunk.GetComponent<Chunk>().GenerateChunk(_posX * 16, _posZ * 16);
-
+       
         chunkDictionary.Add(new ChunkPosition(_posX, _posZ), newChunk.GetComponent<Chunk>());
     }
 

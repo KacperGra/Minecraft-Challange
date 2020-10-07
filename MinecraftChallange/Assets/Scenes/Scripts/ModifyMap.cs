@@ -5,33 +5,53 @@ using UnityEngine;
 public class ModifyMap : MonoBehaviour
 {
     public LayerMask groundLayerMask;
-    private void Update()
+
+    float maxDist = 4;
+
+    // Start is called before the first frame update
+    void Start()
     {
-        if(Input.GetMouseButtonDown(0))
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        bool leftClick = Input.GetMouseButtonDown(0);
+        bool rightClick = Input.GetMouseButtonDown(1);
+        if (leftClick || rightClick)
         {
-            RaycastHit rayCastHit;
-            if (Physics.Raycast(transform.position, transform.forward, out rayCastHit, 5, groundLayerMask))
+            RaycastHit hitInfo;
+            if (Physics.Raycast(transform.position, transform.forward, out hitInfo, maxDist, groundLayerMask))
             {
-                Vector3 clickedBlock;
+                Vector3 pointInTargetBlock;
 
-                clickedBlock = rayCastHit.point + transform.forward * .01f;
+                if (leftClick)
+                    pointInTargetBlock = hitInfo.point + transform.forward * .01f;
+                else
+                    pointInTargetBlock = hitInfo.point - transform.forward * .01f;
 
-                int chunkPosX = (int)clickedBlock.x / 16;
-                int chunkPosZ = (int)clickedBlock.z / 16;
-                Debug.Log("Clicked: X: " + chunkPosX.ToString() + " Y: " + chunkPosZ.ToString());
+                int chunkPosX = Mathf.FloorToInt(pointInTargetBlock.x / 16f);
+                int chunkPosZ = Mathf.FloorToInt(pointInTargetBlock.z / 16f);
 
                 ChunkPosition cp = new ChunkPosition(chunkPosX, chunkPosZ);
+                Chunk tc = MapGenerator.chunkDictionary[cp];
 
-                Chunk chunk = MapGenerator.chunkDictionary[cp];
+                int bix = Mathf.FloorToInt(pointInTargetBlock.x) - chunkPosX * 16 + 1;
+                int biy = Mathf.FloorToInt(pointInTargetBlock.y);
+                int biz = Mathf.FloorToInt(pointInTargetBlock.z) - chunkPosZ * 16 + 1;
 
-                //index of the target block
-                int bix = Mathf.FloorToInt(clickedBlock.x) - chunkPosX + 1;
-                int biy = Mathf.FloorToInt(clickedBlock.y) - 1;
-                int biz = Mathf.FloorToInt(clickedBlock.z) - chunkPosZ + 1;
-                Debug.Log("Clicked pos: X: " + bix.ToString() + " Y: " + biy.ToString() + " Z: " + biz.ToString());
-
-                chunk.blocks[bix, biy, biz] = BlockType.Air;
-                chunk.UpdateMesh(chunkPosX, chunkPosZ);
+                if (leftClick)
+                {
+                    Debug.Log(bix.ToString() + ' ' + biy.ToString() + ' ' + biz.ToString());
+                    tc.blocks[bix, biy, biz] = BlockType.Air;
+                    tc.UpdateMesh(chunkPosX * 16, chunkPosZ * 16);
+                }
+                else if (rightClick)
+                {
+                    tc.blocks[bix, biy, biz] = BlockType.Dirt;
+                    tc.UpdateMesh(chunkPosX * 16, chunkPosZ * 16);
+                }
             }
         }
     }
