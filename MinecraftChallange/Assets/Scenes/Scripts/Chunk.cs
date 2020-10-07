@@ -16,15 +16,16 @@ public class Chunk : MonoBehaviour
 		List<int> triangles = new List<int>();
 		List<Vector2> uvs = new List<Vector2>();
 
-		for (int x = positionX + 1; x < positionX + sizeX; ++x)
+		for (int x = positionX + 1; x < positionX + sizeX + 1; ++x)
 		{
-			for (int z = positionZ + 1; z < positionZ + sizeX; ++z)
+			for (int z = positionZ + 1; z < positionZ + sizeX + 1; ++z)
 			{
 				for (int y = 0; y < maxHeight; ++y)
 				{
 					var blockPos = new Vector3Int(x - 1, y, z - 1);
 					if (blocks[x - positionX, y, z - positionZ] == BlockType.Dirt)
 					{
+						Debug.Log("blockpos " + blockPos.x.ToString() + ' ' + blockPos.y.ToString());
 						if (y < maxHeight - 1 && blocks[x - positionX, y + 1, z - positionZ] == BlockType.Air) // Top
 						{
 							for (int i = 0; i < 6; i++)
@@ -129,9 +130,9 @@ public class Chunk : MonoBehaviour
 
 	public void GenerateChunk(int positionX, int positionZ)
     {
-		for (int x = positionX; x < positionX + sizeX; ++x)
+		for (int x = positionX + 1; x < positionX + sizeX + 1; ++x)
 		{
-			for (int z = positionZ; z < positionZ + sizeX; ++z)
+			for (int z = positionZ + 1; z < positionZ + sizeX + 1; ++z)
 			{
 				int terrainHeight = 8;
 				int height = (int)(Mathf.PerlinNoise(x * .05f, z * .05f) * terrainHeight) + maxHeight - terrainHeight - 32;
