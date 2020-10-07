@@ -23,9 +23,16 @@ public class Chunk : MonoBehaviour
 				for (int y = 0; y < maxHeight; ++y)
 				{
 					var blockPos = new Vector3Int(x - 1, y, z - 1);
-					if (blocks[x - positionX, y, z - positionZ] == BlockType.Dirt)
+					if (blocks[x - positionX, y, z - positionZ] != BlockType.Air)
 					{
-						Debug.Log("blockpos " + blockPos.x.ToString() + ' ' + blockPos.y.ToString());
+						if(blocks[x - positionX, y, z - positionZ] == BlockType.Dirt)
+                        {
+							GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().materials[0];
+						}
+						else
+                        {
+							GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().materials[1];
+						}
 						if (y < maxHeight - 1 && blocks[x - positionX, y + 1, z - positionZ] == BlockType.Air) // Top
 						{
 							for (int i = 0; i < 6; i++)
@@ -110,7 +117,6 @@ public class Chunk : MonoBehaviour
 							}
 						}
 					}
-
 				}
 
 			}
@@ -136,7 +142,12 @@ public class Chunk : MonoBehaviour
 			{
 				int terrainHeight = 8;
 				int height = (int)(Mathf.PerlinNoise(x * .05f, z * .05f) * terrainHeight) + maxHeight - terrainHeight - 32;
-				blocks[x - positionX, height, z - positionZ] = BlockType.Dirt;	
+				blocks[x - positionX, height, z - positionZ] = BlockType.Dirt;
+				for (int fillValue = 0; fillValue < terrainHeight - 5; ++fillValue)
+                {
+					blocks[x - positionX, fillValue, z - positionZ] = BlockType.Stone;
+				}
+				
 			}
 		}
 		UpdateMesh(positionX, positionZ);
