@@ -27,88 +27,129 @@ public class Chunk : MonoBehaviour
 					var blockPos = new Vector3Int(x - 1, y, z - 1);
 					if (blocks[x - positionX, y, z - positionZ] != BlockType.Air)
 					{
+						int textureIndex = 0;
+						int topTextureIndex = 0;
+						switch(blocks[x - positionX, y, z - positionZ])
+                        {
+							case BlockType.Dirt:
+								textureIndex = 0;
+								topTextureIndex = textureIndex;
+								break;
+							case BlockType.Stone:
+								textureIndex = 1;
+								topTextureIndex = textureIndex;
+								break;
+							case BlockType.Grass:
+								textureIndex = 2;
+								topTextureIndex = 3;
+								break;
+						}
 						if (y < maxHeight - 1 && blocks[x - positionX, y + 1, z - positionZ] == BlockType.Air) // Top
 						{
-							for (int i = 0; i < 6; i++)
-							{
-								int triangleIndex = VoxelData.voxelTris[2, i];
-								vertices.Add(blockPos + VoxelData.voxelVerts[triangleIndex]);
-								triangles.Add(vertexIndex);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[2, 0]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[2, 1]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[2, 2]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[2, 3]]);
 
-								uvs.Add(VoxelData.voxelUvs[i]);
+							AddTexture(topTextureIndex, ref uvs);
 
-								vertexIndex++;
-							}
+							triangles.Add(vertexIndex);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 3);
+							vertexIndex += 4;
 						}
 
 						if (y > 0 && blocks[x - positionX, y - 1, z - positionZ] == BlockType.Air) // Bottom
 						{
-							for (int i = 0; i < 6; i++)
-							{
-								int triangleIndex = VoxelData.voxelTris[3, i];
-								vertices.Add(blockPos + VoxelData.voxelVerts[triangleIndex]);
-								triangles.Add(vertexIndex);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[3, 0]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[3, 1]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[3, 2]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[3, 3]]);
 
-								uvs.Add(VoxelData.voxelUvs[i]);
+							AddTexture(textureIndex, ref uvs);
 
-								vertexIndex++;
-							}
+							triangles.Add(vertexIndex);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 3);
+							vertexIndex += 4;
 						}
 
 						if (blocks[x - positionX + 1, y, z - positionZ] == BlockType.Air) // Right
 						{
-							for (int i = 0; i < 6; i++)
-							{
-								int triangleIndex = VoxelData.voxelTris[5, i];
-								vertices.Add(blockPos + VoxelData.voxelVerts[triangleIndex]);
-								triangles.Add(vertexIndex);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[5, 0]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[5, 1]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[5, 2]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[5, 3]]);
 
-								uvs.Add(VoxelData.voxelUvs[i]);
+							AddTexture(textureIndex, ref uvs);
 
-								vertexIndex++;
-							}
+							triangles.Add(vertexIndex);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 3);
+							vertexIndex += 4;
 						}
 
 						if (blocks[x - positionX - 1, y, z - positionZ] == BlockType.Air) // Left
 						{
-							for (int i = 0; i < 6; i++)
-							{
-								int triangleIndex = VoxelData.voxelTris[4, i];
-								vertices.Add(blockPos + VoxelData.voxelVerts[triangleIndex]);
-								triangles.Add(vertexIndex);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[4, 0]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[4, 1]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[4, 2]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[4, 3]]);
 
-								uvs.Add(VoxelData.voxelUvs[i]);
+							AddTexture(textureIndex, ref uvs);
 
-								vertexIndex++;
-							}
+							triangles.Add(vertexIndex);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 3);
+							vertexIndex += 4;
 						}
 
 						if (blocks[x - positionX, y, z - positionZ - 1] == BlockType.Air) // Front
 						{
-							for (int i = 0; i < 6; i++)
-							{
-								int triangleIndex = VoxelData.voxelTris[0, i];
-								vertices.Add(blockPos + VoxelData.voxelVerts[triangleIndex]);
-								triangles.Add(vertexIndex);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[0, 0]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[0, 1]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[0, 2]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[0, 3]]);
 
-								uvs.Add(VoxelData.voxelUvs[i]);
+							AddTexture(textureIndex, ref uvs);
 
-								vertexIndex++;
-							}
+							triangles.Add(vertexIndex);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 3);
+							vertexIndex += 4;
 						}
 
 						if (blocks[x - positionX, y, z - positionZ + 1] == BlockType.Air) // Back
 						{
-							for (int i = 0; i < 6; i++)
-							{
-								int triangleIndex = VoxelData.voxelTris[1, i];
-								vertices.Add(blockPos + VoxelData.voxelVerts[triangleIndex]);
-								triangles.Add(vertexIndex);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[1, 0]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[1, 1]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[1, 2]]);
+							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[1, 3]]);
 
-								uvs.Add(VoxelData.voxelUvs[i]);
+							AddTexture(textureIndex, ref uvs);
 
-								vertexIndex++;
-							}
+							triangles.Add(vertexIndex);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 2);
+							triangles.Add(vertexIndex + 1);
+							triangles.Add(vertexIndex + 3);
+							vertexIndex += 4;
 						}
 					}
 				}
@@ -137,10 +178,30 @@ public class Chunk : MonoBehaviour
 				int terrainHeight = 8;
 				int height = (int)(Mathf.PerlinNoise(x * .035f, z * .035f) * terrainHeight) + maxHeight - terrainHeight - 32;
 				blocks[x - positionX, height, z - positionZ] = BlockType.Dirt;
-				blocks[x - positionX, height + 1, z - positionZ] = BlockType.Grass;		
+				blocks[x - positionX, height + 1, z - positionZ] = BlockType.Grass;
+				for(int i = 0; i < height; ++i)
+                {
+					blocks[x - positionX, i, z - positionZ] = BlockType.Stone;
+
+				}
 			}
 		}
 		UpdateMesh(positionX, positionZ);
 	}
 
+	private void AddTexture(int _textureIndex, ref List<Vector2> uvs)
+    {
+		float uvsY = _textureIndex / VoxelData.TextureAtlasSizeInBlocks;
+		float uvsX = _textureIndex - (uvsY * VoxelData.TextureAtlasSizeInBlocks);
+
+		uvsX *= VoxelData.NormalizedBlockTextureSize;
+		uvsY *= VoxelData.NormalizedBlockTextureSize;
+
+		uvsY = 1f - uvsY - VoxelData.NormalizedBlockTextureSize;
+
+		uvs.Add(new Vector2(uvsX, uvsY));
+		uvs.Add(new Vector2(uvsX, uvsY + VoxelData.NormalizedBlockTextureSize));
+		uvs.Add(new Vector2(uvsX + VoxelData.NormalizedBlockTextureSize, uvsY));
+		uvs.Add(new Vector2(uvsX + VoxelData.NormalizedBlockTextureSize, uvsY + VoxelData.NormalizedBlockTextureSize));
+	}
 }
