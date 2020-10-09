@@ -6,13 +6,7 @@ public class ModifyMap : MonoBehaviour
 {
     public LayerMask groundLayerMask;
 
-    float maxDist = 4;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    private const float maxDistance = 5.5f;
 
     // Update is called once per frame
     void Update()
@@ -22,7 +16,7 @@ public class ModifyMap : MonoBehaviour
         if (leftClick || rightClick)
         {
             RaycastHit hitInfo;
-            if (Physics.Raycast(transform.position, transform.forward, out hitInfo, maxDist, groundLayerMask))
+            if (Physics.Raycast(transform.position, transform.forward, out hitInfo, maxDistance, groundLayerMask))
             {
                 Vector3 pointInTargetBlock;
 
@@ -43,7 +37,6 @@ public class ModifyMap : MonoBehaviour
 
                 if (leftClick)
                 {
-                    Debug.Log(bix.ToString() + ' ' + biy.ToString() + ' ' + biz.ToString());
                     tc.blocks[bix, biy, biz] = BlockType.Air;
                     tc.UpdateMesh(chunkPosX * 16, chunkPosZ * 16);
                 }

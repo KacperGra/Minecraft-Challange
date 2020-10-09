@@ -30,17 +30,6 @@ public class MapGenerator : MonoBehaviour
         chunkDictionary.Add(new ChunkPosition(_posX, _posZ), newChunk.GetComponent<Chunk>());
     }
 
-    void GenerateMap(int _chunkMapSizeX, int _chunkMapSizeY)
-    {
-        for(int x = -_chunkMapSizeX; x < _chunkMapSizeX; ++x)
-        { 
-            for(int z = -_chunkMapSizeY; z < _chunkMapSizeY; ++z)
-            {
-                GenerateChunk(x, z);
-            }
-        }
-    }
-
     void DisplayChunk(int _chunkPositionX, int _chunkPositionZ)
     {
         if(chunkDictionary.ContainsKey(new ChunkPosition(_chunkPositionX, _chunkPositionZ)))
@@ -72,7 +61,6 @@ public class MapGenerator : MonoBehaviour
         var acctualChunk = new Vector2Int((int)player.position.x / 16, (int)player.position.z / 16);
         if(acctualChunk != _currentChunk)
         {
-            Debug.Log("X: " + _currentChunk.x.ToString() + " Y: " + _currentChunk.y.ToString());
             _currentChunk = new Vector2Int((int)player.position.x / 16, (int)player.position.z / 16);
             HideChunk();
             RenderChunks();
