@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class ModifyMap : MonoBehaviour
@@ -7,6 +8,7 @@ public class ModifyMap : MonoBehaviour
     public LayerMask groundLayerMask;
 
     private const float maxDistance = 5.5f;
+    public ItemManager itemManager;
 
     // Update is called once per frame
     void Update()
@@ -15,9 +17,27 @@ public class ModifyMap : MonoBehaviour
         bool rightClick = Input.GetMouseButtonDown(1);
         if (leftClick || rightClick)
         {
+            
             RaycastHit hitInfo;
             if (Physics.Raycast(transform.position, transform.forward, out hitInfo, maxDistance, groundLayerMask))
             {
+                BlockType currentBlock;
+                switch (itemManager.slotIndex)
+                {
+                    case 0:
+                        currentBlock = BlockType.Dirt;
+                        break;
+                    case 1:
+                        currentBlock = BlockType.Grass;
+                        break;
+                    case 2:
+                        currentBlock = BlockType.Stone;
+                        break;
+                    default:
+                        currentBlock = BlockType.Dirt;
+                        break;
+                }
+                
                 Vector3 pointInTargetBlock;
 
                 if (leftClick)
@@ -42,7 +62,7 @@ public class ModifyMap : MonoBehaviour
                 }
                 else if (rightClick)
                 {
-                    tc.blocks[bix, biy, biz] = BlockType.Dirt;
+                    tc.blocks[bix, biy, biz] = currentBlock;
                     tc.UpdateMesh(chunkPosX * 16, chunkPosZ * 16);
                 }
             }
