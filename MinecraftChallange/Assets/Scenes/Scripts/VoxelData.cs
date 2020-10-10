@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class VoxelData
 {
-	public static readonly int TextureAtlasSizeInBlocks = 2;
+	public static readonly int TextureAtlasSizeInBlocks = 4;
 	public static float NormalizedBlockTextureSize
 	{
 

@@ -7,6 +7,8 @@ public enum BlockType
     Air = 0,
     Dirt,
     Grass,
-    Stone
+    Stone,
+    Log,
+    Leaves
 }
 

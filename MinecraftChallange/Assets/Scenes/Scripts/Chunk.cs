@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,24 +28,36 @@ public class Chunk : MonoBehaviour
 					var blockPos = new Vector3Int(x - 1, y, z - 1);
 					if (blocks[x - positionX, y, z - positionZ] != BlockType.Air)
 					{
-						int textureIndex = 0;
-						int topTextureIndex = 0;
-						switch(blocks[x - positionX, y, z - positionZ])
+                        int topTextureIndex;
+                        int textureIndex;
+                        switch (blocks[x - positionX, y, z - positionZ])
                         {
-							case BlockType.Dirt:
-								textureIndex = 0;
-								topTextureIndex = textureIndex;
-								break;
-							case BlockType.Stone:
-								textureIndex = 1;
-								topTextureIndex = textureIndex;
-								break;
-							case BlockType.Grass:
-								textureIndex = 2;
-								topTextureIndex = 3;
-								break;
-						}
-						if (y < maxHeight - 1 && blocks[x - positionX, y + 1, z - positionZ] == BlockType.Air) // Top
+                            case BlockType.Dirt:
+                                textureIndex = 0;
+                                topTextureIndex = textureIndex;
+                                break;
+                            case BlockType.Stone:
+                                textureIndex = 1;
+                                topTextureIndex = textureIndex;
+                                break;
+                            case BlockType.Grass:
+                                textureIndex = 4;
+                                topTextureIndex = 5;
+                                break;
+                            case BlockType.Log:
+                                textureIndex = 8;
+                                topTextureIndex = 9;
+                                break;
+                            case BlockType.Leaves:
+                                textureIndex = 10;
+                                topTextureIndex = textureIndex;
+                                break;
+                            default:
+                                textureIndex = 0;
+                                topTextureIndex = textureIndex;
+                                break;
+                        }
+                        if (y < maxHeight - 1 && blocks[x - positionX, y + 1, z - positionZ] == BlockType.Air) // Top
 						{
 							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[2, 0]]);
 							vertices.Add(blockPos + VoxelData.voxelVerts[VoxelData.voxelTris[2, 1]]);
@@ -157,13 +170,14 @@ public class Chunk : MonoBehaviour
 			}
 		}
 
-		Mesh mesh = new Mesh();
+        Mesh mesh = new Mesh
+        {
+            vertices = vertices.ToArray(),
+            triangles = triangles.ToArray(),
+            uv = uvs.ToArray()
+        };
 
-		mesh.vertices = vertices.ToArray();
-		mesh.triangles = triangles.ToArray();
-		mesh.uv = uvs.ToArray();
-
-		mesh.RecalculateNormals();
+        mesh.RecalculateNormals();
 
 		GetComponent<MeshFilter>().mesh = mesh;
 		GetComponent<MeshCollider>().sharedMesh = mesh;
@@ -182,11 +196,55 @@ public class Chunk : MonoBehaviour
 				for(int i = 0; i < height; ++i)
                 {
 					blocks[x - positionX, i, z - positionZ] = BlockType.Stone;
-
 				}
 			}
 		}
+		GenerateTrees(positionX, positionZ);
 		UpdateMesh(positionX, positionZ);
+	}
+
+	public void GenerateTrees(int positionX, int positionZ)
+    {
+		for (int x = positionX + 3; x < positionX + sizeX - 1; ++x)
+		{
+			for (int z = positionZ + 3; z < positionZ + sizeX - 1; ++z)
+			{
+				for(int y = 0; y < maxHeight; ++y)
+                {		
+					if(blocks[x - positionX, y, z - positionZ] != BlockType.Air)
+                    {
+						if (blocks[x - positionX, y, z - positionZ] == BlockType.Grass)
+						{
+							float chanceToSpawnTree = 0.125f;
+							if (Random.Range(0f, 100f) < chanceToSpawnTree)
+							{
+								int treeHeight = Random.Range(4, 6);
+								for(int i = 1; i < treeHeight; ++i)
+                                {
+									blocks[x - positionX, y + i, z - positionZ] = BlockType.Log;
+                                }
+								int leavesHeight = Random.Range(3, 5);
+								int leavesWidth = Random.Range(4, 6);
+
+								for(int m = -leavesWidth / 2 + 1; m < leavesWidth / 2; ++m)
+                                {
+									for(int n = -leavesWidth / 2 + 1; n < leavesWidth / 2; ++n)
+                                    {
+										for(int j = 0; j < leavesHeight; ++j)
+                                        {
+											blocks[x - positionX + m, y + treeHeight + j, z - positionZ + n] = BlockType.Leaves;
+                                        }
+                                    }
+                                }
+
+								blocks[x - positionX, y + treeHeight + leavesHeight, z - positionZ] = BlockType.Leaves;	
+							}
+						}
+					}
+                }
+			}
+		}
+
 	}
 
 	private void AddTexture(int _textureIndex, ref List<Vector2> uvs)
